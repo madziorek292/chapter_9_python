@@ -1,0 +1,69 @@
+#Ten projekt ma na celu stworzenie programu "multi-clipboard", który pozwala na zapisywanie i ładowanie tekstów do/z schowka za pomocą słów kluczowych, przy użyciu modułu shelve. Program będzie miał kilka funkcji:
+
+#Zapisanie aktualnej zawartości schowka pod określonym słowem kluczowym.
+#Wczytanie zawartości schowka z określonym słowem kluczowym.
+Wypisanie listy wszystkich słów kluczowych zapisanych w bazie.
+#Opis Działania Programu:
+#Jeśli argumentem w wierszu poleceń jest save <keyword>, zawartość schowka jest zapisywana pod słowem kluczowym <keyword>.
+#Jeśli argumentem jest list, lista wszystkich słów kluczowych jest kopiowana do schowka.
+#Jeśli argumentem jest dowolne inne słowo kluczowe, zawartość schowka jest ustawiana na tekst zapisany pod tym słowem kluczowym.
+#Krok po kroku:
+#Importowanie potrzebnych modułów:
+
+#shelve do zarządzania bazą danych.
+#pyperclip do operacji na schowku.
+#sys do odczytywania argumentów wiersza poleceń.
+#Otwieranie pliku typu shelve:
+
+#Plik shelve będzie używany do przechowywania słów kluczowych i powiązanych z nimi tekstów.
+#Obsługa różnych przypadków użycia:
+
+#Zapisz zawartość schowka pod słowem kluczowym.
+#Wylistuj wszystkie słowa kluczowe.
+#Załaduj zawartość schowka z określonym słowem kluczowym.
+#Zamknięcie pliku shelve:
+
+#Po zakończeniu operacji na pliku shelve należy go zamknąć, aby upewnić się, że wszystkie zmiany zostały zapisane.
+
+#! python3
+# mcb.pyw - Saves and loads pieces of text to the clipboard.
+# Usage: py.exe mcb.pyw save <keyword> - Saves clipboard to keyword.
+#        py.exe mcb.pyw <keyword> - Loads keyword to clipboard.
+#        py.exe mcb.pyw list - Loads all keywords to clipboard.
+
+import shelve
+import pyperclip
+import sys
+
+# Otwieranie pliku shelve
+mcbShelf = shelve.open('mcb')
+
+# Zapisywanie zawartości schowka pod słowem kluczowym
+if len(sys.argv) == 3 and sys.argv[1].lower() == 'save':
+    mcbShelf[sys.argv[2]] = pyperclip.paste()
+
+# Wypisanie listy wszystkich słów kluczowych
+elif len(sys.argv) == 2:
+    if sys.argv[1].lower() == 'list':
+        pyperclip.copy(str(list(mcbShelf.keys())))
+    # Załadowanie zawartości schowka z określonym słowem kluczowym
+    elif sys.argv[1] in mcbShelf:
+        pyperclip.copy(mcbShelf[sys.argv[1]])
+
+# Zamknięcie pliku shelve
+mcbShelf.close()
+
+#Jak uruchomić program:
+#Zapisywanie tekstu do schowka pod słowem kluczowym:
+
+#py mcb.pyw save <keyword>
+#Na przykład: py mcb.pyw save spam zapisze aktualną zawartość schowka pod słowem kluczowym spam.
+#Wczytywanie tekstu z określonym słowem kluczowym:
+
+#py mcb.pyw <keyword>
+#Na przykład: py mcb.pyw spam wczyta tekst zapisany pod słowem kluczowym spam do schowka.
+#Wylistowanie wszystkich słów kluczowych:
+
+#py mcb.pyw list
+#Skopiuje listę wszystkich słów kluczowych zapisanych w bazie danych do schowka.
+#Dzięki temu programowi, możemy wygodnie zarządzać różnymi fragmentami tekstu w schowku, używając prostych poleceń w wierszu poleceń.
