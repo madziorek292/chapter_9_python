@@ -1,0 +1,45 @@
+#Program "multi-clipboard" zapisuje i ładuje fragmenty tekstu do schowka. Można teraz zapisać nowe ciągi tekstowe, załadować je do schowka bez konieczności modyfikowania kodu źródłowego oraz usunąć konkretne słowa kluczowe lub wszystkie słowa kluczowe.
+
+#Funkcje programu:
+#Sprawdza argumenty wiersza poleceń.
+#Jeśli argument to save <keyword>, zapisuje zawartość schowka pod danym słowem kluczowym.
+#Jeśli argument to list, kopiuje listę wszystkich słów kluczowych do schowka.
+#Jeśli argument to delete <keyword>, usuwa podane słowo kluczowe z pliku shelf.
+#Jeśli argument to delete, usuwa wszystkie słowa kluczowe.
+#W przeciwnym razie ładuje tekst pod danym słowem kluczowym do schowka.
+
+#! python3
+# mcb.pyw - Zapisuje i ładuje fragmenty tekstu do schowka.
+# Użycie:
+# py.exe mcb.pyw save <keyword> - Zapisuje schowek pod słowem kluczowym.
+# py.exe mcb.pyw <keyword> - Ładuje tekst pod słowem kluczowym do schowka.
+# py.exe mcb.pyw list - Kopiuje listę wszystkich słów kluczowych do schowka.
+# py.exe mcb.pyw delete <keyword> - Usuwa dane słowo kluczowe.
+# py.exe mcb.pyw delete - Usuwa wszystkie słowa kluczowe.
+
+import shelve
+import pyperclip
+import sys
+
+# Otwórz plik shelf
+mcbShelf = shelve.open('mcb')
+
+# Obsłuż różne argumenty wiersza poleceń
+if len(sys.argv) == 3 and sys.argv[1].lower() == 'save':
+    mcbShelf[sys.argv[2]] = pyperclip.paste()
+
+elif len(sys.argv) == 2:
+    if sys.argv[1].lower() == 'list':
+        pyperclip.copy(str(list(mcbShelf.keys())))
+    elif sys.argv[1] in mcbShelf:
+        pyperclip.copy(mcbShelf[sys.argv[1]])
+    elif sys.argv[1].lower() == 'delete':
+        # Usuń wszystkie słowa kluczowe
+        mcbShelf.clear()
+
+elif len(sys.argv) == 3 and sys.argv[1].lower() == 'delete':
+    if sys.argv[2] in mcbShelf:
+        del mcbShelf[sys.argv[2]]
+
+# Zamknij plik shelf
+mcbShelf.close()
