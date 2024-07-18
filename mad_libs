@@ -1,0 +1,40 @@
+#Aby stworzyć program Mad Libs, który odczytuje pliki tekstowe i pozwala użytkownikowi na dodanie własnego tekstu w miejsce słów ADJECTIVE, NOUN, ADVERB lub VERB, możemy użyć następującego podejścia:
+
+#Otwórz plik tekstowy i odczytaj jego zawartość.
+#Zidentyfikuj miejsca, gdzie znajdują się słowa-klucze (ADJECTIVE, NOUN, ADVERB, VERB).
+#Zapytaj użytkownika o odpowiednie słowa, które mają zastąpić te klucze.
+#Zastąp słowa-klucze podanymi przez użytkownika słowami.
+#Zapisz wynik do nowego pliku tekstowego i wyświetl go na ekranie.
+
+import re
+
+# Funkcja do zastąpienia słów-kluczy w tekście
+def mad_libs(file_path):
+    # Otwórz plik i odczytaj jego zawartość
+    with open(file_path, 'r') as file:
+        content = file.read()
+
+    # Lista słów-kluczy
+    placeholders = ['ADJECTIVE', 'NOUN', 'ADVERB', 'VERB']
+
+    # Zamień każde wystąpienie słowa-klucza
+    for placeholder in placeholders:
+        # Znajdź wszystkie wystąpienia słowa-klucza w tekście
+        while placeholder in content:
+            # Zapytaj użytkownika o słowo zastępujące
+            user_input = input(f"Enter a {placeholder.lower()}: ")
+            # Zastąp pierwsze wystąpienie słowa-klucza w tekście
+            content = content.replace(placeholder, user_input, 1)
+
+    # Zapisz wynik do nowego pliku
+    new_file_path = 'mad_libs_result.txt'
+    with open(new_file_path, 'w') as new_file:
+        new_file.write(content)
+
+    # Wyświetl wynik na ekranie
+    print("\nHere is the updated text:")
+    print(content)
+
+# Podaj ścieżkę do pliku wejściowego
+file_path = 'mad_libs.txt'  # Zmień na odpowiednią ścieżkę do pliku tekstowego
+mad_libs(file_path)
