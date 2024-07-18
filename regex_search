@@ -1,0 +1,29 @@
+#Aby napisać program, który otwiera wszystkie pliki .txt w folderze i przeszukuje je pod kątem linii pasujących do wyrażenia regularnego podanego przez użytkownika, możemy użyć modułów os, re oraz glob w Pythonie. Oto jak można to zrobić:
+
+#Program poprosi użytkownika o podanie wyrażenia regularnego.
+#Następnie przeszuka wszystkie pliki .txt w bieżącym katalogu (lub wskazanym przez użytkownika katalogu).
+#Przeszuka linie w każdym pliku i wypisze te, które pasują do wyrażenia regularnego.
+#Oto przykładowy kod w Pythonie:
+
+import os
+import re
+import glob
+
+# Pobierz wyrażenie regularne od użytkownika
+regex = input("Podaj wyrażenie regularne: ")
+
+# Skonwertuj wyrażenie regularne na obiekt regex
+pattern = re.compile(regex)
+
+# Pobierz wszystkie pliki .txt w bieżącym katalogu
+txt_files = glob.glob("*.txt")
+
+# Przeszukaj każdy plik
+for file_name in txt_files:
+    with open(file_name, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+        for line_num, line in enumerate(lines, start=1):
+            if pattern.search(line):
+                print(f"Plik: {file_name}, Linia {line_num}: {line.strip()}")
+
+print("Skończono przeszukiwanie plików.")
