@@ -1,0 +1,35 @@
+import shutil, os, re
+
+datePattern = re.compile(r'''^(.*?)       # cały tekst przed datą
+((0|1)?\d)-                # jedna lub dwie cyfry dla miesiąca
+((0|1|2|3)?\d)-           # jedna lub dwie cyfry dla dnia
+((19|20)\d\d)             # cztery cyfry dla roku
+(.*?)$                    # cały tekst po dacie
+''', re.VERBOSE)
+
+# Przeiterować po plikach w katalogu roboczym.
+for amerFilename in os.listdir('.'):
+    mo = datePattern.search(amerFilename)
+
+    # Pominąć pliki bez daty.
+    if mo == None:
+        continue
+
+    # Pobierz różne części nazwy pliku.
+    beforePart = mo.group(1)
+    monthPart = mo.group(2)
+    dayPart = mo.group(4)
+    yearPart = mo.group(6)
+    afterPart = mo.group(8)
+
+    # Utwórz nazwę pliku w stylu europejskim.
+    euroFilename = beforePart + dayPart + '-' + monthPart + '-' + yearPart + afterPart
+
+    # Pobierz pełne, absolutne ścieżki plików.
+    absWorkingDir = os.path.abspath('.')
+    amerFilename = os.path.join(absWorkingDir, amerFilename)
+    euroFilename = os.path.join(absWorkingDir, euroFilename)
+
+    # Zmień nazwy plików.
+    print(f'Renaming "{amerFilename}" to "{euroFilename}"...')
+    #shutil.move(amerFilename, euroFilename) # odkomentuj po przetestowaniu
